@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+
+<title>Ejercicio de Cotizacion</title>
+<style type="text/css">
+
+</style>
+
+</head>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular.min.js"></script>
+<body>
+<h1 align="center">Ejercicio de Cotizaci&oacute;n con actualizacion cada 5 segundos</h1>
+<table style="margin-left:40%" class="" border=1 ng-app="app">
+    <tbody ng-controller="Cotizacion">
+        <tr>
+
+            <td class=""></td>
+            <td class="">Moneda</td>
+            <td width=50>Precio</td>
+            
+        </tr>
+        <tr>
+
+            <td valign="center" class=""><img width=50 height="30" src="//upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_United_States.svg/125px-Flag_of_the_United_States.svg.png"></i>&nbsp;</td>
+            <td valign="center" class=""><i class=""></i>&nbsp;<b class="divisa_moneda">Dólar</b></td>
+            <td valign="center" class="">${{dolar | number:2}}</td>
+            
+        </tr>
+        <tr>
+
+            <td valign="center" class=""><img width=50 height="30" src="//upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Flag_of_Europe.svg/120px-Flag_of_Europe.svg.png"></img></td>
+            <td valign="center" class=""><i class=""></i>&nbsp;<b class="">Euro</b> </td>
+            <td valign="center" class="">${{euro | number:2}}</td>
+            
+        </tr>
+        <tr>
+
+            <td valign="center" class=""><img width=50 height="30" src="//upload.wikimedia.org/wikipedia/commons/thumb/0/05/Flag_of_Brazil.svg/200px-Flag_of_Brazil.svg.png"></img></td>
+            <td valign="center" class=""><i class=""></i>&nbsp;<b class="">Real</b> </td>
+            <td valign="center" class="">${{real | number:2}}</td>
+            
+        </tr>
+        <tr ng-show="mostrar"><td valign="center" align="center" colspan="3" >{{message}}</td></tr>
+    </tbody>
+</table>
+ 
+</body>    
+</html>
+<script>
+
+
+angular.module("app", []).controller("Cotizacion", function($scope,$http) {  
+     
+    setInterval(function(){getDatos()},5000);    
+    $scope.message ="Actualizando...";      
+    getDatos();
+    
+    function getDatos()
+    {
+        $scope.mostrar=true;
+        
+        $scope.dolar ="";
+        $scope.euro ="";
+        $scope.real ="";
+        $http({method: 'GET',
+              url: '/cotizacion/dolar'
+            }).then(function successCallback(response) {
+                $scope.dolar = response.data.precio;
+                           
+            }, function errorCallback(response) {
+                       $scope.dolar = 'n/c'
+            });
+        
+        $http({method: 'GET',
+              url: '/cotizacion/euro'
+            }).then(function successCallback(response) {
+                $scope.euro = response.data.precio;
+                           
+            }, function errorCallback(response) {
+                       $scope.euro = 'n/c'
+            });
+        
+        $http({method: 'GET',
+              url: '/cotizacion/real'
+            }).then(function successCallback(response) {
+                $scope.real = response.data.precio;
+                $scope.mostrar=false; 
+                           
+            }, function errorCallback(response) {
+                       $scope.real = 'n/c'
+            });
+             
+    }  
+    
+} )
+
+
+</script>
